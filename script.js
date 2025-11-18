@@ -10,6 +10,8 @@ class TaskManager {
         // Cache DOM elements
         this.taskForm = document.getElementById('taskForm');
         this.taskInput = document.getElementById('taskInput');
+        this.hoursInput = document.getElementById('hoursInput');
+        this.minutesInput = document.getElementById('minutesInput');
         this.taskList = document.getElementById('taskList');
         this.emptyState = document.getElementById('emptyState');
         this.clearCompletedBtn = document.getElementById('clearCompleted');
@@ -20,6 +22,7 @@ class TaskManager {
         this.totalTasksEl = document.getElementById('totalTasks');
         this.activeTasksEl = document.getElementById('activeTasks');
         this.completedTasksEl = document.getElementById('completedTasks');
+        this.totalDurationEl = document.getElementById('totalDuration');
         
         // Initialize event listeners
         this.initEventListeners();
@@ -100,10 +103,16 @@ class TaskManager {
             return;
         }
         
+        // Get duration values
+        const hours = parseInt(this.hoursInput.value) || 0;
+        const minutes = parseInt(this.minutesInput.value) || 0;
+        const totalMinutes = (hours * 60) + minutes;
+        
         const task = {
             id: Date.now().toString(),
             text: text,
             completed: false,
+            duration: totalMinutes, // Store duration in minutes
             createdAt: new Date().toISOString()
         };
         
@@ -111,8 +120,10 @@ class TaskManager {
         this.saveTasks();
         this.render();
         
-        // Clear input and focus
+        // Clear inputs and focus
         this.taskInput.value = '';
+        this.hoursInput.value = '0';
+        this.minutesInput.value = '0';
         this.taskInput.focus();
         
         // Announce to screen readers
@@ -259,6 +270,22 @@ class TaskManager {
         label.htmlFor = `task-${task.id}`;
         label.textContent = task.text;
         
+        // Duration badge (if duration exists)
+        let durationBadge = null;
+        if (task.duration && task.duration > 0) {
+            durationBadge = document.createElement('span');
+            durationBadge.className = 'task-duration';
+            const durationText = this.formatDuration(task.duration);
+            durationBadge.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                ${durationText}
+            `;
+            durationBadge.setAttribute('aria-label', `Duration: ${durationText}`);
+        }
+        
         // Delete button
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
@@ -269,6 +296,9 @@ class TaskManager {
         // Assemble the task item
         li.appendChild(checkbox);
         li.appendChild(label);
+        if (durationBadge) {
+            li.appendChild(durationBadge);
+        }
         li.appendChild(deleteBtn);
         
         return li;
@@ -282,9 +312,15 @@ class TaskManager {
         const active = this.tasks.filter(t => !t.completed).length;
         const completed = this.tasks.filter(t => t.completed).length;
         
+        // Calculate total duration
+        const totalMinutes = this.tasks.reduce((sum, task) => {
+            return sum + (task.duration || 0);
+        }, 0);
+        
         this.totalTasksEl.textContent = total;
         this.activeTasksEl.textContent = active;
         this.completedTasksEl.textContent = completed;
+        this.totalDurationEl.textContent = this.formatDuration(totalMinutes);
         
         // Update aria-labels for stats
         document.querySelector('#totalTasks').closest('.stat-item')
@@ -293,6 +329,30 @@ class TaskManager {
             .setAttribute('aria-label', `Active tasks: ${active}`);
         document.querySelector('#completedTasks').closest('.stat-item')
             .setAttribute('aria-label', `Completed tasks: ${completed}`);
+        document.querySelector('#totalDuration').closest('.stat-item')
+            .setAttribute('aria-label', `Total time: ${this.formatDuration(totalMinutes)}`);
+    }
+    
+    /**
+     * Format duration from minutes to readable string
+     * @param {number} minutes - Duration in minutes
+     * @returns {string} Formatted duration string
+     */
+    formatDuration(minutes) {
+        if (!minutes || minutes === 0) {
+            return '0m';
+        }
+        
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        
+        if (hours === 0) {
+            return `${mins}m`;
+        } else if (mins === 0) {
+            return `${hours}h`;
+        } else {
+            return `${hours}h ${mins}m`;
+        }
     }
     
     // ===== DARK MODE =====

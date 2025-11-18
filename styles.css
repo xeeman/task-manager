@@ -199,10 +199,17 @@ body.dark-mode .moon-icon {
 .input-group {
     display: flex;
     gap: var(--spacing-sm);
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.task-input-wrapper {
+    flex: 1;
+    min-width: 200px;
 }
 
 .task-input {
-    flex: 1;
+    width: 100%;
     padding: 0.875rem var(--spacing-md);
     border: 2px solid var(--border-color);
     border-radius: var(--radius-md);
@@ -220,6 +227,52 @@ body.dark-mode .moon-icon {
 
 .task-input::placeholder {
     color: var(--text-muted);
+}
+
+/* Duration Inputs */
+.duration-inputs {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: flex-end;
+}
+
+.duration-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.duration-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.duration-input {
+    width: 70px;
+    padding: 0.875rem 0.5rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    text-align: center;
+    transition: all var(--transition-base);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.duration-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.duration-input::-webkit-inner-spin-button,
+.duration-input::-webkit-outer-spin-button {
+    opacity: 1;
+    height: 30px;
 }
 
 /* ===== BUTTONS ===== */
@@ -277,7 +330,7 @@ body.dark-mode .moon-icon {
 /* ===== TASK STATS ===== */
 .task-stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
     background: var(--bg-primary);
@@ -290,6 +343,10 @@ body.dark-mode .moon-icon {
     background: var(--bg-secondary);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
+}
+
+.stat-item-wide {
+    grid-column: span 1;
 }
 
 .stat-label {
@@ -307,6 +364,10 @@ body.dark-mode .moon-icon {
     font-size: 1.75rem;
     font-weight: 700;
     color: var(--primary-color);
+}
+
+#totalDuration {
+    font-size: 1.5rem;
 }
 
 /* ===== FILTER BUTTONS ===== */
@@ -444,6 +505,29 @@ body.dark-mode .moon-icon {
     word-break: break-word;
 }
 
+/* Task Duration Badge */
+.task-duration {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.task-duration svg {
+    width: 14px;
+    height: 14px;
+}
+
+.task-item.completed .task-duration {
+    opacity: 0.6;
+}
+
 /* Delete Button */
 .delete-btn {
     padding: var(--spacing-xs) var(--spacing-sm);
@@ -539,6 +623,19 @@ body.dark-mode .moon-icon {
     
     .input-group {
         flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .task-input-wrapper {
+        width: 100%;
+    }
+    
+    .duration-inputs {
+        justify-content: flex-start;
+    }
+    
+    .duration-input {
+        width: 80px;
     }
     
     .btn-text {
@@ -546,7 +643,11 @@ body.dark-mode .moon-icon {
     }
     
     .task-stats {
-        gap: var(--spacing-xs);
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .stat-item-wide {
+        grid-column: span 2;
     }
     
     .stat-label {

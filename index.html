@@ -37,16 +37,44 @@
         <section class="task-input-section" aria-label="Add new task">
             <form id="taskForm" class="task-form">
                 <div class="input-group">
-                    <label for="taskInput" class="visually-hidden">Enter a new task</label>
-                    <input 
-                        type="text" 
-                        id="taskInput" 
-                        class="task-input" 
-                        placeholder="What needs to be done?"
-                        aria-required="true"
-                        autocomplete="off"
-                        maxlength="200"
-                    >
+                    <div class="task-input-wrapper">
+                        <label for="taskInput" class="visually-hidden">Enter a new task</label>
+                        <input 
+                            type="text" 
+                            id="taskInput" 
+                            class="task-input" 
+                            placeholder="What needs to be done?"
+                            aria-required="true"
+                            autocomplete="off"
+                            maxlength="200"
+                        >
+                    </div>
+                    <div class="duration-inputs">
+                        <div class="duration-field">
+                            <label for="hoursInput" class="duration-label">Hours</label>
+                            <input 
+                                type="number" 
+                                id="hoursInput" 
+                                class="duration-input" 
+                                min="0" 
+                                max="99"
+                                value="0"
+                                aria-label="Duration in hours"
+                            >
+                        </div>
+                        <div class="duration-field">
+                            <label for="minutesInput" class="duration-label">Minutes</label>
+                            <input 
+                                type="number" 
+                                id="minutesInput" 
+                                class="duration-input" 
+                                min="0" 
+                                max="59"
+                                value="0"
+                                aria-label="Duration in minutes"
+                            >
+                        </div>
+                    </div>
                     <button 
                         type="submit" 
                         class="btn btn-primary" 
@@ -71,6 +99,10 @@
             <div class="stat-item">
                 <span class="stat-label">Completed</span>
                 <span id="completedTasks" class="stat-value">0</span>
+            </div>
+            <div class="stat-item stat-item-wide">
+                <span class="stat-label">Total Time</span>
+                <span id="totalDuration" class="stat-value">0h 0m</span>
             </div>
         </section>
 
